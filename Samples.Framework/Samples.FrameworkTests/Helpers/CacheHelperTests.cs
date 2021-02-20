@@ -94,24 +94,44 @@ namespace Samples.Framework.Helpers.Tests
         [TestMethod("过期时间的测试")]
         public void TestExpireTime()
         {
-            // 设置一个键，一分钟后过期
-            CacheHelper.Set(_stringField, "一分钟后过期", 1);
-
-            int loopTimes = 0;
-
-            while (true)
+            Action loopUntilExpire = () =>
             {
+                int loopTimes = 0;
+
                 loopTimes++;
-                // 等待30秒
-                Thread.Sleep(new TimeSpan(0, 0, 10));
 
-                Console.WriteLine($"等待了{loopTimes * 10}s");
-
-                if (CacheHelper.Get<string>(_stringField) == null)
+                while (true)
                 {
-                    break;
+                    // 等待10秒
+                    Thread.Sleep(new TimeSpan(0, 0, 10));
+
+                    Console.WriteLine($"等待了{loopTimes * 10}s");
+
+                    if (CacheHelper.Get<string>(_stringField) == null)
+                    {
+                        Console.WriteLine($"等待{loopTimes * 10}s之后过期");
+                        break;
+                    }
+
+                    if (loopTimes >= 10)
+                    {
+                        Console.WriteLine($"等待{loopTimes * 10}s之后仍未过期，退出循环");
+                        break;
+                    }
                 }
-            }
+            };
+
+            // 测试绝对过期时间，一分钟之后过期
+            CacheHelper.Set(_stringField, "一分钟后过期", 60, false);
+            loopUntilExpire();
+
+            // 测试相对过期时间，10秒之后过期
+            CacheHelper.Set(_stringField, "十秒后过期", 10);
+            loopUntilExpire();
+
+            // 测试相对过期时间，20秒之后过期
+            CacheHelper.Set(_stringField, "二十秒后过期", 20);
+            loopUntilExpire();
 
             Assert.IsTrue(true);
         }
