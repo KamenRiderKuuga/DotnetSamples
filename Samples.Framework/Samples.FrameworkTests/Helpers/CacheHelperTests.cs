@@ -98,10 +98,10 @@ namespace Samples.Framework.Helpers.Tests
             {
                 int loopTimes = 0;
 
-                loopTimes++;
-
                 while (true)
                 {
+                    loopTimes++;
+
                     // 等待10秒
                     Thread.Sleep(new TimeSpan(0, 0, 10));
 
