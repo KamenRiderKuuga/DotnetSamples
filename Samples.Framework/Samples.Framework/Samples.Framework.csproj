@@ -1,5 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Target Name="BuildApp">
+    <Message Text="Configuration is $(Configuration)"></Message>
+    <Message Text="MSBuildToolsPath is $(MSBuildToolsPath)"></Message>
+  </Target>
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
