@@ -25,6 +25,21 @@ namespace Samples.FrameworkTests.ThreadSamples
             childThread.Join();
         }
 
+        [TestMethod("指定等待线程结束的时间")]
+        public void WaitThreadJoinWithTime()
+        {
+            Thread childThread = new Thread(() =>
+            {
+                Thread.Sleep(5000);
+                WriteThreadName();
+            });
+
+            childThread.Start();
+            Console.WriteLine(childThread.Join(3000));
+            Console.WriteLine(childThread.Join(3000));
+        }
+
+
         public static void WriteThreadName()
         {
             for (int i = 0; i < 10000; i++)
