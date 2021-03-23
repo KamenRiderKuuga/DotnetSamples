@@ -47,5 +47,31 @@ namespace Samples.FrameworkTests.ThreadSamples
                 Console.WriteLine($"{i}", Thread.CurrentThread.ManagedThreadId);
             }
         }
+
+        [TestMethod("交集测试")]
+        public void CaculateTimesBetweenToTimeRange()
+        {
+            var firstTwoTimes = (new DateTime(2012, 11, 12), new DateTime(2013, 12, 13));
+            var secondTwoTimes = (new DateTime(2012, 12, 12), new DateTime(2011, 11, 13));
+
+            GetOverlappingTimeRange(firstTwoTimes, secondTwoTimes);
+        }
+
+        public static (DateTime, DateTime)? GetOverlappingTimeRange((DateTime, DateTime) firstTimeRange,
+                                                                    (DateTime, DateTime) secondTimeRange)
+        {
+            var leftIndex = Math.Max(firstTimeRange.Item1.Ticks, secondTimeRange.Item1.Ticks);
+            var rightIndex = Math.Min(firstTimeRange.Item2.Ticks, secondTimeRange.Item2.Ticks);
+
+            if (leftIndex > rightIndex)
+            {
+                return null;
+            }
+            else
+            {
+                return (new DateTime(leftIndex), new DateTime(rightIndex));
+            }
+        }
+
     }
 }
