@@ -39,6 +39,11 @@ namespace Samples.FrameworkTests.ThreadSamples
             Console.WriteLine(childThread.Join(3000));
         }
 
+        public static void WriteSomething(string message)
+        {
+            Console.WriteLine(message); 
+        }
+
 
         public static void WriteThreadName()
         {
