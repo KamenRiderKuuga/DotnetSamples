@@ -39,9 +39,17 @@ namespace Samples.FrameworkTests.ThreadSamples
             Console.WriteLine(childThread.Join(3000));
         }
 
+        [TestMethod("启动新线程，并传入参数")]
+        public void WriteSomething()
+        {
+            Thread thread = new Thread(() => WriteSomething("Hello World!"));
+            thread.Start();
+            thread.Join();
+        }
+
         public static void WriteSomething(string message)
         {
-            Console.WriteLine(message); 
+            Console.WriteLine(message);
         }
 
 
