@@ -47,11 +47,29 @@ namespace Samples.FrameworkTests.ThreadSamples
             thread.Join();
         }
 
+        [TestMethod("测试线程信号")]
+        public void SignalTest()
+        {
+            var signal = new ManualResetEvent(false);
+            var thread =  new Thread(() =>
+            {
+                Console.WriteLine("Waiting for signal");
+                signal.WaitOne();
+                signal.Dispose();
+                Console.WriteLine("Got signal!");
+            });
+
+            thread.Start();
+
+            Thread.Sleep(3000);
+            signal.Set(); // 打开信号
+            thread.Join();
+        }
+
         public static void WriteSomething(string message)
         {
             Console.WriteLine(message);
         }
-
 
         public static void WriteThreadName()
         {
