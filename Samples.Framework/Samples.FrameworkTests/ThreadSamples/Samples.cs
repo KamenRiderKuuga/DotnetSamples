@@ -78,5 +78,10 @@ namespace Samples.FrameworkTests.ThreadSamples
                 Console.WriteLine($"{i}", Thread.CurrentThread.ManagedThreadId);
             }
         }
+
+        public static ThreadState SimpleThreadState(ThreadState threadState)
+        {
+            return threadState & (ThreadState.Unstarted | ThreadState.WaitSleepJoin | ThreadState.Stopped);
+        }
     }
 }
