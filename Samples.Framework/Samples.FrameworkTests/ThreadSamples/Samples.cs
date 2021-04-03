@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Samples.FrameworkTests.ThreadSamples
 {
@@ -51,19 +52,31 @@ namespace Samples.FrameworkTests.ThreadSamples
         public void SignalTest()
         {
             var signal = new ManualResetEvent(false);
-            var thread =  new Thread(() =>
-            {
-                Console.WriteLine("Waiting for signal");
-                signal.WaitOne();
-                signal.Dispose();
-                Console.WriteLine("Got signal!");
-            });
+            var thread = new Thread(() =>
+           {
+               Console.WriteLine("Waiting for signal");
+               signal.WaitOne();
+               signal.Dispose();
+               Console.WriteLine("Got signal!");
+           });
 
             thread.Start();
 
             Thread.Sleep(3000);
             signal.Set(); // 打开信号
             thread.Join();
+        }
+
+        [TestMethod("开始一个Task")]
+        public void RunTask()
+        {
+            Task task = Task.Run(() =>
+            {
+                Thread.Sleep(3000);
+                Console.WriteLine("Foo");
+            });
+            Console.WriteLine(task.IsCompleted);
+            task.Wait();
         }
 
         public static void WriteSomething(string message)
