@@ -8,7 +8,7 @@ namespace Samples.xUnit
     public class TaskTest
     {
         [Fact]
-        public void LongRunnigTaskTest()
+        public void Test1()
         {
              // 创建一个长时间运行的Task，这将不使用线程池中的线程，而是启动一个线程池之外的额外线程
             var longRunningTask = Task.Factory.StartNew(_ =>
