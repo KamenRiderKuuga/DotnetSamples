@@ -21,6 +21,9 @@ namespace Samples.xUnit
         }
 
 
+        /// <summary>
+        /// 测试多线程时，由于自增不能保证原子性，造成最后的数值没有达到预期
+        /// </summary>
         [Fact]
         public void RunTaskToAdd()
         {
