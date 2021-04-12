@@ -9,7 +9,7 @@ namespace Samples.Practical.Models
         /// <summary>
         /// ID
         /// </summary>
-        public string ID { get; set; }
+        public long ID { get; set; }
 
         /// <summary>
         /// 姓名

@@ -18,6 +18,13 @@ namespace Samples.Practical
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureLogging((context, loggingBuilder) =>
+                {
+                    // 过滤掉以指定字符串开头的命名空间的日志
+                    loggingBuilder.AddFilter("System", LogLevel.Warning);
+                    loggingBuilder.AddFilter("Microsoft", LogLevel.Warning);
+                    loggingBuilder.AddLog4Net();
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
