@@ -3,11 +3,19 @@ using Xunit;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Xunit.Abstractions;
 
 namespace Samples.xUnit
 {
     public class TaskTest
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public TaskTest(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
         [Fact]
         public void LongRunnigTaskTest()
         {
@@ -64,6 +72,48 @@ namespace Samples.xUnit
             tasks.ForEach(item => item.Start());
             Task.WaitAll(tasks.ToArray());
             Console.WriteLine($"最后自增结果是{currentValue}");
+        }
+
+        /// <summary>
+        /// 两个线程交替输出单双数
+        /// </summary>
+        [Fact]
+        public void TwoThreadPrint()
+        {
+            AutoResetEvent eventForSingle = new AutoResetEvent(true);
+            AutoResetEvent eventForDouble = new AutoResetEvent(false);
+
+            var number = 0;
+
+            Thread threadForSingle = new Thread(() =>
+            {
+                while (number < 999)
+                {
+                    eventForSingle.WaitOne();
+                    number++;
+                    _testOutputHelper.WriteLine(number.ToString());
+                    eventForDouble.Set();
+                }
+            });
+
+            Thread threadForDouble = new Thread(() =>
+            {
+                while (number < 999)
+                {
+                    eventForDouble.WaitOne();
+                    number++;
+                    _testOutputHelper.WriteLine(number.ToString());
+                    eventForSingle.Set();
+                }
+            });
+
+            threadForSingle.Start();
+            threadForDouble.Start();
+
+            Thread.Sleep(10000);
+
+            eventForSingle.Dispose();
+            eventForDouble.Dispose();
         }
     }
 }
