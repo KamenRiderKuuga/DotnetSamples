@@ -1,6 +1,6 @@
 using System;
 
-namespace Samples.Practical.Models
+namespace Samples.LittleAspNetCoreBook.Models
 {
     public class ErrorViewModel
     {

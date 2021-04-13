@@ -1,9 +1,13 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Samples.Practical.Models;
+using Samples.LittleAspNetCoreBook.Models;
 
-namespace Samples.Practical.Controllers
+namespace Samples.LittleAspNetCoreBook.Controllers
 {
     public class HomeController : Controller
     {

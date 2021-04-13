@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.FrameworkTests", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.xUnit", "Samples.xUnit\Samples.xUnit.csproj", "{A1913D59-6CDB-4409-B2D4-1C75394D58BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.Practical", "Samples.Practical\Samples.Practical.csproj", "{2ED0CAF4-3294-4E8A-B236-1350C7CCC422}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.LittleAspNetCoreBook", "Samples.LittleAspNetCoreBook\Samples.LittleAspNetCoreBook.csproj", "{AC6C5B00-431F-4FA6-8D45-7981F17D15BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{A1913D59-6CDB-4409-B2D4-1C75394D58BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1913D59-6CDB-4409-B2D4-1C75394D58BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1913D59-6CDB-4409-B2D4-1C75394D58BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2ED0CAF4-3294-4E8A-B236-1350C7CCC422}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2ED0CAF4-3294-4E8A-B236-1350C7CCC422}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2ED0CAF4-3294-4E8A-B236-1350C7CCC422}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2ED0CAF4-3294-4E8A-B236-1350C7CCC422}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC6C5B00-431F-4FA6-8D45-7981F17D15BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC6C5B00-431F-4FA6-8D45-7981F17D15BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC6C5B00-431F-4FA6-8D45-7981F17D15BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC6C5B00-431F-4FA6-8D45-7981F17D15BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
