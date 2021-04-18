@@ -41,21 +41,15 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function () {
+    let allCheckbox = document.querySelectorAll('.done-checkbox');
+    allCheckbox.forEach(item => item.addEventListener('click', function () {
+        this.disabled = true;
 
-        // Wire up all of the checkboxes to run markCompleted()
-        $('.done-checkbox').on('click', function (e) {
-            markCompleted(e.target);
-        });
-    });
+        var row = this.closest('tr');
+        row.classList.add("done");
 
-    function markCompleted(checkbox) {
-        checkbox.disabled = true;
-
-        var row = checkbox.closest('tr');
-        $(row).addClass('done');
-
-        var form = checkbox.closest('form');
+        var form = this.closest('form');
         form.submit();
-    }
+    }))
+
 </script>
