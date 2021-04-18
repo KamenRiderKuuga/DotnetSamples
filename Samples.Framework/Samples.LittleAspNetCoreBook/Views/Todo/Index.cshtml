@@ -24,7 +24,10 @@
         {
             <tr>
                 <td>
-                    <input type="checkbox" class="done-checkbox">
+                    <form asp-action="MarkDone" method="POST">
+                        <input type="checkbox" class="done-checkbox">
+                        <input type="hidden" name="id" value="@item.Id">
+                    </form>
                 </td>
                 <td>@item.Title</td>
                 <td>@item.DueAt.Humanize(culture:new System.Globalization.CultureInfo("zh-CN"))<td>
@@ -33,6 +36,26 @@
     </table>
 
     <div class="panel-footer add-item-form">
-        <!-- TODO: Add item form -->
+        @await Html.PartialAsync("AddItemPartial", new TodoItem())
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        // Wire up all of the checkboxes to run markCompleted()
+        $('.done-checkbox').on('click', function (e) {
+            markCompleted(e.target);
+        });
+    });
+
+    function markCompleted(checkbox) {
+        checkbox.disabled = true;
+
+        var row = checkbox.closest('tr');
+        $(row).addClass('done');
+
+        var form = checkbox.closest('form');
+        form.submit();
+    }
+</script>
