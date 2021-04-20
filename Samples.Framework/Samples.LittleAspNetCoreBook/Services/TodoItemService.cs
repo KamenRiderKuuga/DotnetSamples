@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Samples.LittleAspNetCoreBook.Data;
 using Samples.LittleAspNetCoreBook.Models;
@@ -16,19 +17,20 @@ namespace Samples.LittleAspNetCoreBook.Services
             this._context = context;
         }
 
-        public async Task<TodoItem[]> GetIncompleteItemsAsync()
+        public async Task<TodoItem[]> GetIncompleteItemsAsync(IdentityUser user)
         {
             var items = await _context.Items
-                                      .Where(x => x.IsDone == false)
+                                      .Where(x => x.IsDone == false && x.UserId == user.Id)
                                       .ToArrayAsync();
 
             return items;
         }
 
 
-        public async Task<bool> AddItemAsync(TodoItem newItem)
+        public async Task<bool> AddItemAsync(TodoItem newItem, IdentityUser user)
         {
             newItem.Id = new Guid();
+            newItem.UserId = user.Id;
             newItem.IsDone = false;
             newItem.DueAt = DateTimeOffset.Now.AddDays(3);
 
@@ -38,10 +40,10 @@ namespace Samples.LittleAspNetCoreBook.Services
             return saveResult == 1;
         }
 
-        public async Task<bool> MarkDoneAsync(Guid id)
+        public async Task<bool> MarkDoneAsync(Guid id, IdentityUser user)
         {
             var item = await _context.Items
-                                     .Where(x => x.Id == id)
+                                     .Where(x => x.Id == id && x.UserId == user.Id)
                                      .SingleOrDefaultAsync();
 
             if (item == null)
