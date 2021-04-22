@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using Samples.LittleAspNetCoreBook.Models;
 
 namespace Samples.LittleAspNetCoreBook.Controllers
 {
+    [Authorize(Roles ="Administrator")]
     public class ManageUsersController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
