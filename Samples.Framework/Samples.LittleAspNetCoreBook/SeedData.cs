@@ -40,7 +40,7 @@ namespace Samples.LittleAspNetCoreBook
 
             if (testAdmin != null)
             {
-                await userManager.DeleteAsync(testAdmin);
+                return;
             };
 
             testAdmin = new IdentityUser
