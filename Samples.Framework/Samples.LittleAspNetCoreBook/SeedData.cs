@@ -38,12 +38,16 @@ namespace Samples.LittleAspNetCoreBook
                 .Where(x => x.UserName == "admin@todo.local")
                 .SingleOrDefaultAsync();
 
-            if (testAdmin != null) return;
+            if (testAdmin != null)
+            {
+                await userManager.DeleteAsync(testAdmin);
+            };
 
             testAdmin = new IdentityUser
             {
                 UserName = "admin@todo.local",
-                Email = "admin@todo.local"
+                Email = "admin@todo.local",
+                EmailConfirmed = true,
             };
             await userManager.CreateAsync(
                 testAdmin, "NotSecure123!!");
@@ -51,6 +55,4 @@ namespace Samples.LittleAspNetCoreBook
                 testAdmin, Constants.AdministratorRole);
         }
     }
-
-
 }
