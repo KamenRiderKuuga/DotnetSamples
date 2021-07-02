@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text.Json;
 
 namespace Samples.Console
 {
@@ -10,7 +11,7 @@ namespace Samples.Console
     {
         static void Main(string[] args)
         {
-            ExcuteTest(Constants.STATIC_FIELD_TEST);
+            ExcuteTest(Constants.DYNAMIC_TYPE_SERIALIZE);
 
             System.Console.ReadKey();
         }
@@ -25,6 +26,10 @@ namespace Samples.Console
 
                 case Constants.STATIC_FIELD_TEST:
                     StaticField.StaticFieldTest();
+                    break;
+
+                case Constants.DYNAMIC_TYPE_SERIALIZE:
+                    DynamicTypeSerialize.DynamicTypeSerializeTest();
                     break;
 
                 default:
@@ -143,10 +148,57 @@ namespace Samples.Console
             _dic.Add(string.Empty);
         }
 
-        public static List<string> InitDictionary()
+        private static List<string> InitDictionary()
         {
             System.Console.WriteLine("第一次引用List对象，List初始化成功");
             return new List<string>();
+        }
+    }
+
+    public class DynamicTypeSerialize
+    {
+        public class SampleClass
+        {
+            public int Field1 { get; set; }
+
+            public string Field2 { get; set; }
+
+            public DateTime Field3 { get; set; }
+        }
+
+
+        public static void DynamicTypeSerializeTest()
+        {
+            int tryTimes = 100000;
+
+            for (int i = 1; i <=10; i++)
+            {
+                System.Console.WriteLine("第{0}轮测试，序列化动态类型对象({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                {
+                    for (int _ = 0; _ < tryTimes; _++)
+                    {
+                        JsonSerializer.Serialize(new
+                        {
+                            Field1 = 1,
+                            Field2 = "Field2",
+                            Field3 = DateTime.Now
+                        });
+                    }
+                }));
+
+                System.Console.WriteLine("第{0}轮测试，序列化类型化对象({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                {
+                    for (int _ = 0; _ < tryTimes; _++)
+                    {
+                        JsonSerializer.Serialize(new SampleClass()
+                        {
+                            Field1 = 1,
+                            Field2 = "Field2",
+                            Field3 = DateTime.Now
+                        });
+                    }
+                }));
+            }
         }
     }
 
@@ -155,6 +207,8 @@ namespace Samples.Console
         public const string ENUMS_DESCRIPTION_TEST = "获取枚举信息测试，对比反射速度以及字典速度";
 
         public const string STATIC_FIELD_TEST = "静态变量测试，主要是为了测试其初始化时机，初始化的线程安全性，容量上限";
+
+        public const string DYNAMIC_TYPE_SERIALIZE = "动态类型序列化效率测试";
     }
 
     public enum SampleEnums
