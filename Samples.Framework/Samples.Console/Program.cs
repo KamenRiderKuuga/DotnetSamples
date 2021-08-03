@@ -3,10 +3,12 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
+using System.Xml;
 
 namespace Samples.Console
 {
@@ -14,7 +16,7 @@ namespace Samples.Console
     {
         static void Main(string[] args)
         {
-            ExcuteTest(Constants.TEXT_JSON_CUSTOM);
+            ExcuteTest(Constants.HTML_READER);
 
             System.Console.ReadKey();
         }
@@ -37,6 +39,10 @@ namespace Samples.Console
 
                 case Constants.TEXT_JSON_CUSTOM:
                     TextJsonCustom.TextJsonCustomTest();
+                    break;
+
+                case Constants.HTML_READER:
+                    HTMLReader.HTMLReaderTest();
                     break;
 
                 default:
@@ -279,6 +285,49 @@ namespace Samples.Console
         }
     }
 
+    public class HTMLReader
+    {
+        public static void HTMLReaderTest()
+        {
+            var content = @"<p><strong><span style=""font-size: 12pt;"">各位亲爱的玩家：</span></strong></p><p><span style=""font-size: 12pt;"">&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;非常感谢您对<span style=""color: #ff9900;"">《逍遥情缘》</span>的关注和热情。为了想能更好的体验游戏，我们正在对服务进行最后一-轮优化。服务器将推迟开放，为此我们深感歉意。我们会尽快解决问题，开服后，我们会及时奉上开服大礼包。期待您届时再次登录查收。&lt;p&gt;p123&lt;/p&gt;</span></p><p style=""text-align: right;""><strong><span style=""font-size: 12pt;"">官网运营团队</span></strong></p>";
+            
+            content = @$"<!DOCTYPE documentElement[
+                      <!ENTITY Alpha ""&#913;"">
+                      <!ENTITY ndash ""&#8211;"">
+                      <!ENTITY mdash ""&#8212;"">
+                      <!ENTITY nbsp ""&#160;"">
+                      ]><root>{content}</root>";
+
+
+            XmlReaderSettings settings = new XmlReaderSettings()
+            {
+                DtdProcessing = DtdProcessing.Parse
+            };
+
+            using (XmlReader reader = XmlReader.Create(new StringReader(content), settings))
+            {
+                while (reader.Read())
+                {
+                    switch (reader.NodeType)
+                    {
+                        case XmlNodeType.Element:
+                            System.Diagnostics.Debug.WriteLine("Start Element {0}", reader.Name);
+                            break;
+                        case XmlNodeType.Text:
+                            System.Diagnostics.Debug.WriteLine("Text Node: {0}", reader.Value);
+                            break;
+                        case XmlNodeType.EndElement:
+                            System.Diagnostics.Debug.WriteLine("End Element {0}", reader.Name);
+                            break;
+                        default:
+                            // do nothing
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
     public class Constants
     {
         public const string ENUMS_DESCRIPTION_TEST = "获取枚举信息测试，对比反射速度以及字典速度";
@@ -288,6 +337,8 @@ namespace Samples.Console
         public const string DYNAMIC_TYPE_SERIALIZE = "动态类型序列化效率测试";
 
         public const string TEXT_JSON_CUSTOM = "System.Text.Json自定义序列化/反序列化测试";
+
+        public const string HTML_READER = "测试使用XmlReader对HTML进行解析及转换";
     }
 
     public enum SampleEnums
