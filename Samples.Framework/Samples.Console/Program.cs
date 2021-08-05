@@ -7,6 +7,7 @@ using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Text.Unicode;
 using System.Xml;
 
@@ -289,13 +290,23 @@ namespace Samples.Console
     {
         public static void HTMLReaderTest()
         {
-            var content = @"<p><strong><span style=""font-size: 12pt;"">各位亲爱的玩家：</span></strong></p><p><span style=""font-size: 12pt;"">&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;非常感谢您对<span style=""color: #ff9900;"">《逍遥情缘》</span>的关注和热情。为了想能更好的体验游戏，我们正在对服务进行最后一-轮优化。服务器将推迟开放，为此我们深感歉意。我们会尽快解决问题，开服后，我们会及时奉上开服大礼包。期待您届时再次登录查收。&lt;p&gt;p123&lt;/p&gt;</span></p><p style=""text-align: right;""><strong><span style=""font-size: 12pt;"">官网运营团队</span></strong></p>";
-            
+            var result = string.Empty;
+            var spanStack = new Stack<(bool, bool)>();
+            var content = @"<p><span style=""font-size: 18px;""><strong>亲爱的各位玩家：</strong></span></p>
+<p><span style=""font-size: 18px;"">&nbsp; &nbsp; 我们将于<em><strong>北京时间2021年8月4日</strong> </em>对逍遥情缘首次开启删档公测，希望大家踊跃参与。我们准备了丰富的公测庆典活动，特殊配件、永久棋盘、S级棋手等你来拿。</span></p>
+<p><span style=""font-size: 18px;"">&nbsp; &nbsp; 更多版本爆料,请留意<span style=""color: #ff0000;"">社区</span>和<span style=""color: #ff0000;"">后续公告</span>.</span></p>
+<p><span style=""font-size: 18px;"">&nbsp; &nbsp; 游戏品质的改进离不开各位的协助，如果各位在游戏中有任何疑问，可以使用游戏中的&ldquo;<strong>联系客服</strong>&rdquo;功能进行反馈，或者可以在玩家社群中与更多玩家共同讨论哦！</span></p>
+<p><span style=""font-size: 18px;"">&nbsp; &nbsp; 感谢您的支持，祝您游戏愉快！</span></p>
+<p>&nbsp;</p>
+<p><span style=""font-size: 18px;"">&nbsp; &nbsp;《逍遥情缘》运营团队</span></p>";
+
             content = @$"<!DOCTYPE documentElement[
                       <!ENTITY Alpha ""&#913;"">
                       <!ENTITY ndash ""&#8211;"">
                       <!ENTITY mdash ""&#8212;"">
-                      <!ENTITY nbsp ""&#160;"">
+                      <!ENTITY nbsp ""\u00A0\u00A0"">
+                      <!ENTITY ldquo ""&#8220;"">
+                      <!ENTITY rdquo ""&#8221;"">
                       ]><root>{content}</root>";
 
 
@@ -308,22 +319,96 @@ namespace Samples.Console
             {
                 while (reader.Read())
                 {
+                    var tag = reader.Name;
                     switch (reader.NodeType)
                     {
                         case XmlNodeType.Element:
                             System.Diagnostics.Debug.WriteLine("Start Element {0}", reader.Name);
+
+                            if (tag == "strong")
+                            {
+                                result += "<b>";
+                            }
+                            else if (tag == "em")
+                            {
+                                result += "<i>";
+                            }
+                            else if (tag == "span")
+                            {
+                                var style = reader.GetAttribute("style");
+                                var hasColor = false;
+                                var hasSize = false;
+                                if (!string.IsNullOrEmpty(style))
+                                {
+                                    if (style.Contains("color:"))
+                                    {
+                                        var matchResult = Regex.Match(style, "color: (.*?);");
+                                        if (matchResult.Success && matchResult.Groups.Count > 1)
+                                        {
+                                            result += $"<color={matchResult.Groups[1].Value}>";
+                                            hasColor = true;
+                                        }
+                                    }
+
+                                    if (style.Contains("font-size:"))
+                                    {
+                                        var matchResult = Regex.Match(style, "font-size: (.*?);");
+                                        if (matchResult.Success && matchResult.Groups.Count > 1)
+                                        {
+                                            result += $"<size={matchResult.Groups[1].Value}>";
+                                            hasSize = true;
+                                        }
+                                    }
+
+                                    spanStack.Push((hasColor, hasSize));
+                                }
+                            }
+
                             break;
                         case XmlNodeType.Text:
                             System.Diagnostics.Debug.WriteLine("Text Node: {0}", reader.Value);
+                            result += reader.Value;
+
                             break;
                         case XmlNodeType.EndElement:
                             System.Diagnostics.Debug.WriteLine("End Element {0}", reader.Name);
+
+                            if (tag == "p")
+                            {
+                                result += "\\n";
+                            }
+                            else if (tag == "span")
+                            {
+                                (var hasColor, var hasSize) = spanStack.Pop();
+
+                                if (hasColor)
+                                {
+                                    result += "</color>";
+                                }
+
+                                if (hasSize)
+                                {
+                                    result += "</size>";
+                                }
+                            }
+                            else if (tag == "strong")
+                            {
+                                result += "</b>";
+                            }
+                            else if (tag == "em")
+                            {
+                                result += "</i>";
+                            }
+
                             break;
+
                         default:
                             // do nothing
                             break;
                     }
                 }
+
+                System.Diagnostics.Debug.WriteLine(result);
             }
         }
     }
