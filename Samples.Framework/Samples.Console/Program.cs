@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -17,8 +18,7 @@ namespace Samples.Console
     {
         static void Main(string[] args)
         {
-            ExcuteTest(Constants.HTML_READER);
-
+            ExcuteTest(Constants.REFLECTION_CACHE);
             System.Console.ReadKey();
         }
 
@@ -44,6 +44,10 @@ namespace Samples.Console
 
                 case Constants.HTML_READER:
                     HTMLReader.HTMLReaderTest();
+                    break;
+
+                case Constants.REFLECTION_CACHE:
+                    ReflectionCache.ReflectionCacheTest();
                     break;
 
                 default:
@@ -87,7 +91,6 @@ namespace Samples.Console
                         SampleEnums.Third.GetRemark();
                     }
                 }));
-
 
                 System.Console.WriteLine("第{0}轮测试，使用字典做缓存花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
                 {
@@ -413,6 +416,104 @@ namespace Samples.Console
         }
     }
 
+    public static class ReflectionCache
+    {
+        public static void ReflectionCacheTest()
+        {
+            var model = new SampleModel() { Name = "名称" };
+
+            int tryTimes = 100000000;
+
+            // 由于预编译的原因，这里测试两次
+            for (int i = 1; i < 3; i++)
+            {
+                System.Console.WriteLine("第{0}轮测试，直接反射花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                {
+                    for (int _ = 0; _ < tryTimes; _++)
+                    {
+                        model.GetValueOfPropertyNoCache<string>("Name");
+                    }
+                }));
+
+
+                System.Console.WriteLine("第{0}轮测试，使用字典做缓存（Type + FieldName作为键）花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                {
+                    for (int _ = 0; _ < tryTimes; _++)
+                    {
+                        model.GetValueOfPropertyCache<string, SampleModel>("Name");
+                    }
+                }));
+
+                System.Console.WriteLine("第{0}轮测试，使用字典做缓存（Type作为键）（不足以完全界定字段）花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                {
+                    for (int _ = 0; _ < tryTimes; _++)
+                    {
+                        model.GetValueOfPropertyCacheType<string, SampleModel>("Name");
+                    }
+                }));
+
+                System.Console.WriteLine("第{0}轮测试，使用字典做缓存（FullName + PropertyName作为键）花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                {
+                    for (int _ = 0; _ < tryTimes; _++)
+                    {
+                        model.GetValueOfPropertyCacheFullName<string, SampleModel>("Name");
+                    }
+                }));
+            }
+        }
+
+        static readonly ConcurrentDictionary<(Type, string), PropertyInfo> _propertyInfo = new ConcurrentDictionary<(Type, string), PropertyInfo>();
+        static readonly ConcurrentDictionary<Type, PropertyInfo> _propertyInfoWithType = new ConcurrentDictionary<Type, PropertyInfo>();
+        static readonly ConcurrentDictionary<string, PropertyInfo> _propertyInfoWithFullName = new ConcurrentDictionary<string, PropertyInfo>();
+
+        public static TProperty GetValueOfPropertyNoCache<TProperty>(this object entity, string propertyName)
+        {
+            var type = entity.GetType();
+
+            return (TProperty)type.GetProperty(propertyName).GetValue(entity);
+        }
+
+        public static TProperty GetValueOfPropertyCache<TProperty, TEntity>(this TEntity entity, string propertyName)
+        {
+            var type = entity.GetType();
+
+            if (!_propertyInfo.TryGetValue((type, propertyName), out var propertyInfo))
+            {
+                propertyInfo = type.GetProperty(propertyName);
+                _propertyInfo.TryAdd((type, propertyName), propertyInfo);
+            }
+
+            return (TProperty)propertyInfo.GetValue(entity);
+        }
+
+        public static TProperty GetValueOfPropertyCacheType<TProperty, TEntity>(this TEntity entity, string propertyName)
+        {
+            var type = entity.GetType();
+
+            if (!_propertyInfoWithType.TryGetValue(type, out var propertyInfo))
+            {
+                propertyInfo = type.GetProperty(propertyName);
+                _propertyInfoWithType.TryAdd(type, propertyInfo);
+            }
+
+            return (TProperty)propertyInfo.GetValue(entity);
+        }
+
+        public static TProperty GetValueOfPropertyCacheFullName<TProperty, TEntity>(this TEntity entity, string propertyName)
+        {
+            var type = entity.GetType();
+            var key = type.FullName + "," + propertyName;
+
+            if (!_propertyInfoWithFullName.TryGetValue(key, out var propertyInfo))
+            {
+                propertyInfo = type.GetProperty(propertyName);
+                _propertyInfoWithFullName.TryAdd(key, propertyInfo);
+            }
+
+            return (TProperty)propertyInfo.GetValue(entity);
+        }
+    }
+
     public class Constants
     {
         public const string ENUMS_DESCRIPTION_TEST = "获取枚举信息测试，对比反射速度以及字典速度";
@@ -424,6 +525,17 @@ namespace Samples.Console
         public const string TEXT_JSON_CUSTOM = "System.Text.Json自定义序列化/反序列化测试";
 
         public const string HTML_READER = "测试使用XmlReader对HTML进行解析及转换";
+
+        public const string REFLECTION_CACHE = "Reflection of property with or without cache";
+    }
+
+    public class SampleModel
+    {
+        public string Name { get; set; }
+
+        public int Age { get; set; }
+
+        public int Sex { get; set; }
     }
 
     public enum SampleEnums
