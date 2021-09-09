@@ -384,14 +384,14 @@ namespace Samples.Console
                             {
                                 (var hasColor, var hasSize) = spanStack.Pop();
 
-                                if (hasColor)
-                                {
-                                    result += "</color>";
-                                }
-
                                 if (hasSize)
                                 {
                                     result += "</size>";
+                                }
+
+                                if (hasColor)
+                                {
+                                    result += "</color>";
                                 }
                             }
                             else if (tag == "strong")
