@@ -1,2 +1,2 @@
-# Samples.Framework
- 一些内置对象的使用示例，备忘用
+# DotnetSamples
+ 一些dotnet的示例代码，备忘用
