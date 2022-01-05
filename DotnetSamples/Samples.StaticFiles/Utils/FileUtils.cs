@@ -20,12 +20,12 @@ public class FileUtils
     /// </summary>
     /// <param name="fileExtension"></param>
     /// <returns></returns>
-    public static bool IsImageExtension(string fileExtension)
+    public static bool IsImageExtension(string? fileExtension)
     {
         // 把扩展名转换成统一格式
-        fileExtension = fileExtension.TrimStart('.').ToLower();
+        fileExtension = fileExtension?.TrimStart('.').ToLower();
 
-        if (Constants.ImageExtensions.Contains(fileExtension))
+        if (Constants.ImageExtensions.Contains(fileExtension!))
         {
             return true;
         }

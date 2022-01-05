@@ -50,7 +50,7 @@ public class ResponseBase<T> : ResponseBase where T : ResultBase
     /// <summary>
     /// 返回数据集合
     /// </summary>
-    public T Data { get; set; }
+    public T? Data { get; set; }
 
     /// <summary>
     /// 响应成功，默认值

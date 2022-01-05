@@ -6,18 +6,8 @@
     public class FileUploadResult : ResultBase
     {
         /// <summary>
-        /// 文件路径
-        /// </summary>
-        public string FilePath { get; set; }
-
-        /// <summary>
         /// 文件相对路径
         /// </summary>
-        public string RelativeFilePath { get; set; }
-
-        /// <summary>
-        /// 域名
-        /// </summary>
-        public string DomainName { get; set; }
+        public string FilePath { get; set; } = string.Empty;
     }
 }

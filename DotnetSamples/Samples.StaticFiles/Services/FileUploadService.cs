@@ -46,7 +46,7 @@ public class FileUploadService
 
                 bool isImage = FileUtils.IsImageExtension(fileSaveInfo.FileExtension);
 
-                folderName = FileUtils.GetFilePathWithWorkPath(Path.Combine(Constants.FileFolderName, fileSaveInfo.ProjectName));
+                folderName = FileUtils.GetFilePathWithWorkPath(Path.Combine(Constants.FileFolderName, fileSaveInfo.ProjectName!));
                 fileName = Guid.NewGuid().ToString("N") + fileSaveInfo.FileExtension;
                 filePath = Path.Combine(folderName, fileName);
 
@@ -91,9 +91,7 @@ public class FileUploadService
             return result;
         }
 
-        result.DomainName = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host.Value}";
-        result.RelativeFilePath = $"/files/{fileSaveInfo.ProjectName}/{fileName}";
-        result.FilePath = result.DomainName + result.RelativeFilePath;
+        result.FilePath = $"/files/{fileSaveInfo.ProjectName}/{fileName}";
 
         return result;
     }
@@ -114,14 +112,14 @@ public class FileUploadService
         if (hasContentDispositionHeader)
         {
             // 验证是否含有非文件数据
-            if (!MultipartRequestHelper.HasFileViaContentDisposition(contentDisposition))
+            if (!MultipartRequestHelper.HasFileViaContentDisposition(contentDisposition!))
             {
                 result.Result = ResponseStatusEnums.HasNotFileContentInRequest;
                 return result;
             }
 
             // 验证是否含有项目名
-            if (!MultipartRequestHelper.GetNameFromContentDisposition(contentDisposition, out var projectName))
+            if (!MultipartRequestHelper.GetNameFromContentDisposition(contentDisposition!, out var projectName))
             {
                 result.Result = ResponseStatusEnums.ProjectNameIsEmpty;
                 return result;
@@ -129,7 +127,7 @@ public class FileUploadService
 
             var folderName = FileUtils.GetFilePathWithWorkPath(Path.Combine(Constants.FileFolderName, projectName));
             var fileName = Guid.NewGuid().ToString("N") + Path.GetExtension(WebUtility.HtmlEncode(
-                    contentDisposition.FileName.Value));
+                    contentDisposition!.FileName.Value));
 
             var filePath = Path.Combine(folderName, fileName);
 
@@ -143,9 +141,7 @@ public class FileUploadService
                 await section.Body.CopyToAsync(targetStream);
             }
 
-            result.DomainName = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host.Value}";
-            result.RelativeFilePath = $"/files/{projectName}/{fileName}";
-            result.FilePath = result.DomainName + result.RelativeFilePath;
+            result.FilePath = $"/files/{projectName}/{fileName}";
         }
         else
         {
@@ -175,7 +171,7 @@ public class FileUploadService
 
                 var fileExtension = Path.GetExtension(fileSaveInfo.File.FileName);
 
-                folderName = FileUtils.GetFilePathWithWorkPath(Path.Combine(Constants.FileFolderName, fileSaveInfo.ProjectName));
+                folderName = FileUtils.GetFilePathWithWorkPath(Path.Combine(Constants.FileFolderName, fileSaveInfo.ProjectName!));
                 fileName = Guid.NewGuid().ToString("N") + fileExtension;
                 filePath = Path.Combine(folderName, fileName);
 
@@ -202,9 +198,7 @@ public class FileUploadService
             return result;
         }
 
-        result.DomainName = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host.Value}";
-        result.RelativeFilePath = $"/files/{fileSaveInfo.ProjectName}/{fileName}";
-        result.FilePath = result.DomainName + result.RelativeFilePath;
+        result.FilePath = $"/files/{fileSaveInfo.ProjectName}/{fileName}";
         return result;
     }
 }

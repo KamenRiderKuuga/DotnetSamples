@@ -86,7 +86,7 @@ public class SignRequirementFilter : IAuthorizationFilter
         }
 
         // 验证密钥是否存在
-        if (!_secretKeyConfigs.Value.ContainsKey(appId))
+        if (!_secretKeyConfigs.Value.ContainsKey(appId!))
         {
             message = "没有与此appid对应的密钥";
             setResponse();
@@ -97,7 +97,7 @@ public class SignRequirementFilter : IAuthorizationFilter
         {
             case SignVerifyEnums.SHA256:
                 var content = appId + timestamp + random;
-                verifyResult = SignUtils.VerifyForSHA256(content, _secretKeyConfigs.Value[appId], sign);
+                verifyResult = SignUtils.VerifyForSHA256(content, _secretKeyConfigs.Value[appId!], sign!);
                 break;
 
             default:

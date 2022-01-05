@@ -13,7 +13,7 @@ public static class Extensions
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static bool IsEmpty(this string value)
+    public static bool IsEmpty(this string? value)
     {
         return string.IsNullOrEmpty(value);
     }

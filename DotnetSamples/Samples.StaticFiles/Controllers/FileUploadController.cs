@@ -69,7 +69,7 @@ public class FileUploadController : ControllerBase
     [Route(nameof(UploadLargeFile))]
     public async Task<ResponseBase<FileUploadResult>> UploadLargeFile()
     {
-        var result = new FileUploadResult();
+        var result = new FileUploadResult() { Result = ResponseStatusEnums.SaveFileFail };
 
         if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
         {
@@ -85,7 +85,10 @@ public class FileUploadController : ControllerBase
         reader.BodyLengthLimit = long.MaxValue;
         var section = await reader.ReadNextSectionAsync();
 
-        result = await _service.SaveLargeFile(section);
+        if (section != null)
+        {
+            result = await _service.SaveLargeFile(section);
+        }
 
         return ResponseBase<FileUploadResult>.Result(result);
     }
