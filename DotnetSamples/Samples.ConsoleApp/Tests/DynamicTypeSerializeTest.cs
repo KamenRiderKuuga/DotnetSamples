@@ -1,8 +1,8 @@
-﻿using Samples.Console.Utils;
+﻿using Samples.ConsoleApp.Utils;
 using System;
 using System.Text.Json;
 
-namespace Samples.Console.Tests
+namespace Samples.ConsoleApp.Tests
 {
     internal class DynamicTypeSerializeTest : ITest
     {
@@ -21,7 +21,7 @@ namespace Samples.Console.Tests
 
             for (int i = 1; i <= 10; i++)
             {
-                System.Console.WriteLine("第{0}轮测试，序列化动态类型对象({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                Console.WriteLine("第{0}轮测试，序列化动态类型对象({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
                 {
                     for (int _ = 0; _ < tryTimes; _++)
                     {
@@ -34,7 +34,7 @@ namespace Samples.Console.Tests
                     }
                 }));
 
-                System.Console.WriteLine("第{0}轮测试，序列化类型化对象({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                Console.WriteLine("第{0}轮测试，序列化类型化对象({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
                 {
                     for (int _ = 0; _ < tryTimes; _++)
                     {

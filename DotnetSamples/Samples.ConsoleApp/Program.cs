@@ -1,13 +1,13 @@
-﻿using Samples.Console.Tests;
+﻿using Samples.ConsoleApp.Tests;
 using System;
 
-namespace Samples.Console
+namespace Samples.ConsoleApp
 {
     class Program
     {
         static void Main(string[] args)
         {
-            ExcuteTest(Constants.CHANNEL_TEST);
+            ExcuteTest(Constants.NAMEDPIPE_TEST);
             System.Console.ReadKey();
         }
 
@@ -46,5 +46,7 @@ namespace Samples.Console
         public const string REFLECTION_CACHE = "Reflection of property with or without cache";
 
         public const string CHANNEL_TEST = "compare Channel with ConcurrentQueue";
+
+        public const string NAMEDPIPE_TEST = "";
     }
 }

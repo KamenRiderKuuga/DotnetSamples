@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Reflection;
 
-namespace Samples.Console.Utils
+namespace Samples.ConsoleApp.Utils
 {
     public static class EnumExtension
     {

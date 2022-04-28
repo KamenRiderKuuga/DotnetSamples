@@ -3,7 +3,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml;
 
-namespace Samples.Console.Tests
+namespace Samples.ConsoleApp.Tests
 {
     public class HTMLReaderTest : ITest
     {

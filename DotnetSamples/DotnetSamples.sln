@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Samples.xUnit", "Samples.xU
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Samples.LittleAspNetCoreBook", "Samples.LittleAspNetCoreBook\Samples.LittleAspNetCoreBook.csproj", "{AC6C5B00-431F-4FA6-8D45-7981F17D15BA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Samples.Console", "Samples.Console\Samples.Console.csproj", "{F464F842-22CE-4344-BE95-6696B7F0F65E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Samples.ConsoleApp", "Samples.ConsoleApp\Samples.ConsoleApp.csproj", "{F464F842-22CE-4344-BE95-6696B7F0F65E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.StaticFiles", "Samples.StaticFiles\Samples.StaticFiles.csproj", "{E28AF390-7776-4B27-8618-FB25AC3EC68A}"
 EndProject

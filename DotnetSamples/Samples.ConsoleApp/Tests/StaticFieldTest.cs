@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Samples.Console.Tests
+namespace Samples.ConsoleApp.Tests
 {
     public class StaticFieldTest : ITest
     {
@@ -8,7 +9,7 @@ namespace Samples.Console.Tests
 
         public void DoTest()
         {
-            System.Console.WriteLine("程序开始运行");
+            Console.WriteLine("程序开始运行");
 
             _dic.Add(string.Empty);
             _dic.Add(string.Empty);
@@ -16,7 +17,7 @@ namespace Samples.Console.Tests
 
         private static List<string> InitDictionary()
         {
-            System.Console.WriteLine("第一次引用List对象，List初始化成功");
+            Console.WriteLine("第一次引用List对象，List初始化成功");
             return new List<string>();
         }
     }

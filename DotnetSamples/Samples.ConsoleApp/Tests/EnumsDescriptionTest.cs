@@ -1,11 +1,11 @@
-﻿using Samples.Console.Utils;
+﻿using Samples.ConsoleApp.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 
-namespace Samples.Console.Tests
+namespace Samples.ConsoleApp.Tests
 {
     public class EnumsDescriptionTest : ITest
     {
@@ -45,7 +45,7 @@ namespace Samples.Console.Tests
             // 由于预编译的原因，这里测试两次
             for (int i = 1; i < 3; i++)
             {
-                System.Console.WriteLine("第{0}轮测试，直接反射花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                Console.WriteLine("第{0}轮测试，直接反射花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
                 {
                     for (int _ = 0; _ < tryTimes; _++)
                     {
@@ -55,7 +55,7 @@ namespace Samples.Console.Tests
                     }
                 }));
 
-                System.Console.WriteLine("第{0}轮测试，使用字典做缓存花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                Console.WriteLine("第{0}轮测试，使用字典做缓存花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
                 {
                     for (int _ = 0; _ < tryTimes; _++)
                     {
@@ -74,7 +74,7 @@ namespace Samples.Console.Tests
                     }
                 }));
 
-                System.Console.WriteLine("第{0}轮测试，使用线程安全的字典做缓存花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                Console.WriteLine("第{0}轮测试，使用线程安全的字典做缓存花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
                 {
                     for (int _ = 0; _ < tryTimes; _++)
                     {
@@ -93,7 +93,7 @@ namespace Samples.Console.Tests
                     }
                 }));
 
-                System.Console.WriteLine("第{0}轮测试，使用预初始化好的字典做缓存花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                Console.WriteLine("第{0}轮测试，使用预初始化好的字典做缓存花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
                 {
                     for (int _ = 0; _ < tryTimes; _++)
                     {
@@ -103,7 +103,7 @@ namespace Samples.Console.Tests
                     }
                 }));
 
-                System.Console.WriteLine("第{0}轮测试，使用预初始化好的线程安全的字典做缓存花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                Console.WriteLine("第{0}轮测试，使用预初始化好的线程安全的字典做缓存花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
                 {
                     for (int _ = 0; _ < tryTimes; _++)
                     {

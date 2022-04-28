@@ -1,10 +1,10 @@
-﻿using Samples.Console.Utils;
+﻿using Samples.ConsoleApp.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace Samples.Console.Tests
+namespace Samples.ConsoleApp.Tests
 {
     public class ReflectionCacheTest : ITest
     {
@@ -89,7 +89,7 @@ namespace Samples.Console.Tests
             // 由于预编译的原因，这里测试两次
             for (int i = 1; i < 3; i++)
             {
-                System.Console.WriteLine("第{0}轮测试，直接反射花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                Console.WriteLine("第{0}轮测试，直接反射花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
                 {
                     for (int _ = 0; _ < tryTimes; _++)
                     {
@@ -97,7 +97,7 @@ namespace Samples.Console.Tests
                     }
                 }));
 
-                System.Console.WriteLine("第{0}轮测试，使用字典做缓存（Type + FieldName作为键）花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                Console.WriteLine("第{0}轮测试，使用字典做缓存（Type + FieldName作为键）花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
                 {
                     for (int _ = 0; _ < tryTimes; _++)
                     {
@@ -105,7 +105,7 @@ namespace Samples.Console.Tests
                     }
                 }));
 
-                System.Console.WriteLine("第{0}轮测试，使用字典做缓存（Type作为键）（不足以完全界定字段）花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                Console.WriteLine("第{0}轮测试，使用字典做缓存（Type作为键）（不足以完全界定字段）花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
                 {
                     for (int _ = 0; _ < tryTimes; _++)
                     {
@@ -113,7 +113,7 @@ namespace Samples.Console.Tests
                     }
                 }));
 
-                System.Console.WriteLine("第{0}轮测试，使用字典做缓存（FullName + PropertyName作为键）花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
+                Console.WriteLine("第{0}轮测试，使用字典做缓存（FullName + PropertyName作为键）花费的时间({1}次)，{2}ms", i, tryTimes, TestUtils.TimeMethod(() =>
                 {
                     for (int _ = 0; _ < tryTimes; _++)
                     {

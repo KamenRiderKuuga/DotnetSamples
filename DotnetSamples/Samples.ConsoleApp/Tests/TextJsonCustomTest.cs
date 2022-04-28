@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
 
-namespace Samples.Console.Tests
+namespace Samples.ConsoleApp.Tests
 {
     public class TextJsonCustomTest : ITest
     {
@@ -71,7 +71,7 @@ namespace Samples.Console.Tests
                 Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
             });
 
-            System.Console.WriteLine(content);
+            Console.WriteLine(content);
 
             var contentValue = JsonSerializer.Deserialize<ServerInfo>(content);
         }

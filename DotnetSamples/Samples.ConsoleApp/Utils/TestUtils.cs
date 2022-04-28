@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Samples.Console.Utils
+namespace Samples.ConsoleApp.Utils
 {
     public class TestUtils
     {

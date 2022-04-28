@@ -1,11 +1,12 @@
-﻿using Samples.Console.Utils;
+﻿using Samples.ConsoleApp.Utils;
+using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
-namespace Samples.Console.Tests
+namespace Samples.ConsoleApp.Tests
 {
     public class ChannelTest : ITest
     {
@@ -20,7 +21,7 @@ namespace Samples.Console.Tests
                 while (true)
                 {
                     await Task.Delay(2000);
-                    System.Console.WriteLine($"CPU Usage:{await TestUtils.GetCpuUsageForProcess()}");
+                    Console.WriteLine($"CPU Usage:{await TestUtils.GetCpuUsageForProcess()}");
                 }
             });
 
@@ -42,7 +43,7 @@ namespace Samples.Console.Tests
 
                 Task.WaitAll(readTask, writeTask);
 
-                System.Console.WriteLine($"使用Channel处理{_targetCount}条数据花费{stopwatch.ElapsedMilliseconds}ms");
+                Console.WriteLine($"使用Channel处理{_targetCount}条数据花费{stopwatch.ElapsedMilliseconds}ms");
 
                 stopwatch.Restart();
 
@@ -58,10 +59,10 @@ namespace Samples.Console.Tests
 
                 Task.WaitAll(readTask, writeTask);
 
-                System.Console.WriteLine($"使用ConcurrentQueue处理{_targetCount}条数据花费{stopwatch.ElapsedMilliseconds}ms");
+                Console.WriteLine($"使用ConcurrentQueue处理{_targetCount}条数据花费{stopwatch.ElapsedMilliseconds}ms");
             }
 
-            System.Console.WriteLine("Channel开始等待数据");
+            Console.WriteLine("Channel开始等待数据");
             _ = Task.Run(async () =>
             {
                 await ChannelReadAsync(cts.Token);
@@ -69,11 +70,11 @@ namespace Samples.Console.Tests
 
             await Task.Delay(20000);
             cts.Cancel();
-            System.Console.WriteLine("Channel结束等待数据");
+            Console.WriteLine("Channel结束等待数据");
 
             var queueCts = new CancellationTokenSource();
 
-            System.Console.WriteLine("ConcurrentQueue开始等待数据");
+            Console.WriteLine("ConcurrentQueue开始等待数据");
 
             _ = Task.Run(() =>
             {
@@ -84,7 +85,7 @@ namespace Samples.Console.Tests
 
             queueCts.Cancel();
 
-            System.Console.WriteLine("ConcurrentQueue结束等待数据");
+            Console.WriteLine("ConcurrentQueue结束等待数据");
 
         }
 

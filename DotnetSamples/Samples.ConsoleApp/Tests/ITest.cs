@@ -1,4 +1,4 @@
-﻿namespace Samples.Console.Tests
+﻿namespace Samples.ConsoleApp.Tests
 {
     interface ITest
     {
