@@ -24,6 +24,7 @@ namespace Samples.ConsoleApp
                 Constants.HTML_READER => new HTMLReaderTest(),
                 Constants.REFLECTION_CACHE => new ReflectionCacheTest(),
                 Constants.CHANNEL_TEST => new ChannelTest(),
+                Constants.NAMEDPIPE_TEST => new NamedPipeTest(),
                 _ => throw new NotImplementedException()
             };
 
@@ -47,6 +48,6 @@ namespace Samples.ConsoleApp
 
         public const string CHANNEL_TEST = "compare Channel with ConcurrentQueue";
 
-        public const string NAMEDPIPE_TEST = "";
+        public const string NAMEDPIPE_TEST = "NamedPipe test";
     }
 }
