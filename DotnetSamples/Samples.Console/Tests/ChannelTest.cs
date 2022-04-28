@@ -1,32 +1,30 @@
-﻿using System.Collections.Concurrent;
+﻿using Samples.Console.Utils;
+using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using Xunit;
-using Xunit.Abstractions;
 
-namespace Samples.xUnit
+namespace Samples.Console.Tests
 {
-    public class ChannelBenchmark
+    public class ChannelTest : ITest
     {
-        private const int _targetCount = 100_000_000;
-        private readonly Channel<User> _channel = Channel.CreateUnbounded<User>();
-
-        private readonly ConcurrentQueue<User> _queue = new ConcurrentQueue<User>();
-
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        public ChannelBenchmark(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
-
-        [Fact(DisplayName = "compare Channel with ConcurrentQueue")]
-        public void ChannelBenchmarkTest()
+        public async void DoTest()
         {
             Task readTask;
             Task writeTask;
             Stopwatch stopwatch = new Stopwatch();
+
+            _ = Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await Task.Delay(2000);
+                    System.Console.WriteLine($"CPU Usage:{await TestUtils.GetCpuUsageForProcess()}");
+                }
+            });
+
+            var cts = new CancellationTokenSource();
 
             for (int i = 1; i <= 2; i++)
             {
@@ -34,7 +32,7 @@ namespace Samples.xUnit
 
                 readTask = Task.Run(async () =>
                 {
-                    await ChannelReadAsync();
+                    await ChannelReadAsync(cts.Token);
                 });
 
                 writeTask = Task.Run(() =>
@@ -44,13 +42,13 @@ namespace Samples.xUnit
 
                 Task.WaitAll(readTask, writeTask);
 
-                _testOutputHelper.WriteLine($"使用Channel处理{_targetCount}条数据花费{stopwatch.ElapsedMilliseconds}ms");
+                System.Console.WriteLine($"使用Channel处理{_targetCount}条数据花费{stopwatch.ElapsedMilliseconds}ms");
 
                 stopwatch.Restart();
 
                 readTask = Task.Run(() =>
                 {
-                    QueueReadAsync();
+                    QueueReadAsync(cts.Token);
                 });
 
                 writeTask = Task.Run(() =>
@@ -60,9 +58,39 @@ namespace Samples.xUnit
 
                 Task.WaitAll(readTask, writeTask);
 
-                _testOutputHelper.WriteLine($"使用ConcurrentQueue处理{_targetCount}条数据花费{stopwatch.ElapsedMilliseconds}ms");
+                System.Console.WriteLine($"使用ConcurrentQueue处理{_targetCount}条数据花费{stopwatch.ElapsedMilliseconds}ms");
             }
+
+            System.Console.WriteLine("Channel开始等待数据");
+            _ = Task.Run(async () =>
+            {
+                await ChannelReadAsync(cts.Token);
+            });
+
+            await Task.Delay(20000);
+            cts.Cancel();
+            System.Console.WriteLine("Channel结束等待数据");
+
+            var queueCts = new CancellationTokenSource();
+
+            System.Console.WriteLine("ConcurrentQueue开始等待数据");
+
+            _ = Task.Run(() =>
+            {
+                QueueReadAsync(queueCts.Token);
+            });
+
+            await Task.Delay(20000);
+
+            queueCts.Cancel();
+
+            System.Console.WriteLine("ConcurrentQueue结束等待数据");
+
         }
+
+        private const int _targetCount = 100_000_000;
+        private readonly Channel<User> _channel = Channel.CreateUnbounded<User>();
+        private readonly ConcurrentQueue<User> _queue = new ConcurrentQueue<User>();
 
         class User
         {
@@ -76,14 +104,14 @@ namespace Samples.xUnit
             public int Age { get; set; }
         }
 
-        async Task ChannelReadAsync()
+        async Task ChannelReadAsync(CancellationToken token = default)
         {
             ChannelReader<User> reader = _channel.Reader;
             var totalCount = 0;
 
-            while (true)
+            while (!token.IsCancellationRequested)
             {
-                var user = await reader.ReadAsync();
+                var user = await reader.ReadAsync(token);
                 totalCount += 1;
                 if (totalCount == _targetCount)
                 {
@@ -108,10 +136,10 @@ namespace Samples.xUnit
             }
         }
 
-        void QueueReadAsync()
+        void QueueReadAsync(CancellationToken token = default)
         {
             var totalCount = 0;
-            while (true)
+            while (!token.IsCancellationRequested)
             {
                 _queue.TryDequeue(out var item);
                 if (item != null)
