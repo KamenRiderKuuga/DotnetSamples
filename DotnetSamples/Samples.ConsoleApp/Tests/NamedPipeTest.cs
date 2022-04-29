@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Threading.Tasks;
@@ -8,23 +9,26 @@ namespace Samples.ConsoleApp.Tests
     public class NamedPipeTest : ITest
     {
         private readonly string _pipeName = "PipeOfConsoleApp";
+        private readonly int _targetCount = 10_000_000;
 
         public void DoTest()
         {
             StartServer();
+            string data = new string('a', 128);
 
             using (var client = new NamedPipeClientStream(".", _pipeName, PipeDirection.Out))
+            using (var writer = new StreamWriter(client))
             {
                 client.Connect();
-                StreamWriter writer = new StreamWriter(client);
 
-                while (true)
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Restart();
+                for (int i = 0; i < _targetCount; i++)
                 {
-                    string input = Console.ReadLine();
-                    if (string.IsNullOrEmpty(input)) break;
-                    writer.WriteLine(input);
-                    writer.Flush();
+                    writer.WriteLine(data);
                 }
+
+                Console.WriteLine(stopwatch.ElapsedMilliseconds);
             }
         }
 
@@ -44,7 +48,7 @@ namespace Samples.ConsoleApp.Tests
                         {
                             throw new IOException("The client disconnected");
                         }
-                        Console.WriteLine("received message：" + line);
+                        // Console.WriteLine("received message：" + line);
                     }
                     catch (IOException)
                     {

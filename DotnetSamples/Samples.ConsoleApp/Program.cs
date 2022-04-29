@@ -7,8 +7,8 @@ namespace Samples.ConsoleApp
     {
         static void Main(string[] args)
         {
-            ExcuteTest(Constants.NAMEDPIPE_TEST);
-            System.Console.ReadKey();
+            ExcuteTest(Constants.MEMORYMAPPEDFILE_TEST);
+            Console.ReadKey();
         }
 
         private static void ExcuteTest(string testFlag)
@@ -25,6 +25,7 @@ namespace Samples.ConsoleApp
                 Constants.REFLECTION_CACHE => new ReflectionCacheTest(),
                 Constants.CHANNEL_TEST => new ChannelTest(),
                 Constants.NAMEDPIPE_TEST => new NamedPipeTest(),
+                Constants.MEMORYMAPPEDFILE_TEST => new MemoryMappedFileTest(),
                 _ => throw new NotImplementedException()
             };
 
@@ -49,5 +50,7 @@ namespace Samples.ConsoleApp
         public const string CHANNEL_TEST = "compare Channel with ConcurrentQueue";
 
         public const string NAMEDPIPE_TEST = "NamedPipe test";
+
+        public const string MEMORYMAPPEDFILE_TEST = "MemoryMappedFile test";
     }
 }
