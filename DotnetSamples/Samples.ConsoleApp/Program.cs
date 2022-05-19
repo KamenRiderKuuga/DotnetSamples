@@ -7,7 +7,7 @@ namespace Samples.ConsoleApp
     {
         static void Main()
         {
-            ExcuteTest(Constants.MEMORYMAPPEDFILE_TEST);
+            ExcuteTest(Constants.DICTIONARY_TEST);
             Console.ReadKey();
         }
 
@@ -26,6 +26,7 @@ namespace Samples.ConsoleApp
                 Constants.CHANNEL_TEST => new ChannelTest(),
                 Constants.NAMEDPIPE_TEST => new NamedPipeTest(),
                 Constants.MEMORYMAPPEDFILE_TEST => new MemoryMappedFileTest(),
+                Constants.DICTIONARY_TEST => new DictionaryTest(),
                 _ => throw new NotImplementedException()
             };
 
@@ -52,5 +53,7 @@ namespace Samples.ConsoleApp
         public const string NAMEDPIPE_TEST = "NamedPipe test";
 
         public const string MEMORYMAPPEDFILE_TEST = "MemoryMappedFile test";
+
+        public const string DICTIONARY_TEST = "use different types key in Dictionary";
     }
 }
